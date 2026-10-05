@@ -1,0 +1,49 @@
+name: Build iPadPlay
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build iPadPlay
+        run: |
+          xcodebuild \
+            -project iPadPlay.xcodeproj \
+            -scheme iPadPlay \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            -archivePath "$RUNNER_TEMP/iPadPlay.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            DEVELOPMENT_TEAM="" \
+            clean archive
+
+      - name: Create unsigned IPA
+        run: |
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          cp -R \
+            "$RUNNER_TEMP/iPadPlay.xcarchive/Products/Applications/iPadPlay.app" \
+            "$RUNNER_TEMP/ipa/Payload/"
+
+          cd "$RUNNER_TEMP/ipa"
+          zip -r "$GITHUB_WORKSPACE/iPadPlay-unsigned.ipa" Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: iPadPlay-unsigned
+          path: iPadPlay-unsigned.ipa
