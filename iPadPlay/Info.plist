@@ -22,20 +22,26 @@
     <string>APPL</string>
 
     <key>CFBundleShortVersionString</key>
-    <string>0.3.0</string>
+    <string>0.4.0</string>
 
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
 
     <key>LSRequiresIPhoneOS</key>
     <true/>
 
     <key>NSLocalNetworkUsageDescription</key>
-    <string>iPadPlay needs local network access to communicate with your iPhone for CarPlay.</string>
+    <string>iPadPlay需要访问局域网，以发现WinPlay电脑并接收CarPlay画面。</string>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+    </dict>
 
     <key>NSBonjourServices</key>
     <array>
-        <string>_airplay._tcp</string>
+        <string>_ipadplay._tcp</string>
     </array>
 
     <key>UISupportedInterfaceOrientations~ipad</key>
